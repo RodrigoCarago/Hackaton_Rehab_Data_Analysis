@@ -2,6 +2,8 @@
 Functions for preprocessing the EEG data, including filtering, epoching, and calculating ERD/ERS.
 '''
 
+from turtle import right
+
 import scipy
 from scipy.signal import iirnotch, filtfilt
 from scipy.signal import butter
@@ -9,6 +11,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io
 import mne
+from autoreject import AutoReject
+
 
 
 def bandpass_filter(data, fs, lowcut, highcut, order):
@@ -74,3 +78,25 @@ def get_trigger_onsets(trig, fs):
     
     onset_times = onsets / fs
     return onset_times
+
+
+def autoreject_epochs(epochs, info):
+    """
+    Input:  (n_epochs, n_samples, n_channels)
+    Output: (n_epochs_kept, n_samples, n_channels)
+    """
+
+    # Convert to MNE format
+    data_mne = np.transpose(epochs, (0, 2, 1))  # (epochs, channels, samples)
+    epochs_mne = mne.EpochsArray(data_mne, info)
+
+    # AutoReject
+    ar = AutoReject()
+    cleaned_mne = ar.fit_transform(epochs_mne)
+
+    # Convert back
+    cleaned_np = cleaned_mne.get_data().transpose(0, 2, 1)
+
+    print(f"AutoReject: {len(epochs)} → {len(cleaned_np)} epochs")
+
+    return cleaned_np
