@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Stroke Rehab Web — Inicio rapido
 
-## Getting Started
+Este proyecto necesita **2 procesos** para funcionar:
+- Frontend Next.js (`http://localhost:3000`)
+- Backend FastAPI (`http://localhost:8000`)
 
-First, run the development server:
+## Requisitos
+
+- Node.js 18+ (recomendado 20+)
+- npm
+- Python 3.10+
+- pip
+
+## 1) Instalar dependencias
+
+Desde la carpeta `stroke-rehab-web`:
+
+```bash
+npm install
+```
+
+Para el backend (desde la raiz del repo `stroke-rehab`):
+
+```bash
+python -m pip install -r stroke-rehab-web/backend/requirements.txt
+```
+
+## 2) Levantar backend
+
+Desde la raiz del repo `stroke-rehab`:
+
+```bash
+uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Health check:
+
+```bash
+curl http://localhost:8000/health
+```
+
+## 3) Levantar frontend
+
+Desde `stroke-rehab-web`:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre:
+- [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Flujo minimo para probar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Cargar los 4 archivos (`pre-train`, `pre-test`, `post-train`, `post-test`)
+2. Ajustar filtros/hiperparametros
+3. Ejecutar `Run Analysis`
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Si el frontend no conecta, verifica que el backend este corriendo en `:8000`.
