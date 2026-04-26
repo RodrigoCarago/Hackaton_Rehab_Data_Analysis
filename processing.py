@@ -99,3 +99,25 @@ def calculate_erd_ers(active_epochs, ref_epochs, fs, low, high):
     R = get_band_power(ref_epochs, fs, low, high)
 
     return 10 * np.log10(A / R)
+
+
+def normalize_subject(x):
+    x = np.array(x)
+    return (x - np.mean(x)) / (np.std(x) + 1e-8)
+
+
+def group_stats(data, session, band, hand):
+    key = f"{band}_{hand}"   # 👈 THIS is the real structure in your dict
+
+    subject_data = []
+
+    for subject in data.keys():
+        try:
+            x = data[subject][session][key]
+            subject_data.append(x)
+        except KeyError:
+            print(f"Missing: {subject} {session} {key}")
+
+    subject_data = np.array(subject_data)
+
+    return np.mean(subject_data, axis=0), np.std(subject_data, axis=0)
